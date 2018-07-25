@@ -6,10 +6,20 @@ Drupal to Static
 
 (TBD)
 
+## Changes compared to [lukaswhite/Drupal-Jekyll-Export](https://github.com/lukaswhite/Drupal-Jekyll-Export)
+
+- Added GPLv2 license file (#1)
+- Renamed the module from `jekyll_export` to `drupal_to_static` (#2)
+- Changed configuration path to `admin/config/development/drupal_to_static`
+- Used version branch `7.x-1.x` instead of `master` (#3)
+- Removed "Include unpublished nodes?" option (#9)
+- Made Markdownify optional (#7)
+- Make dates in file names optional (#5)
+
 ## Dependencies
 
 - [PHP Zip extension](http://php.net/manual/en/book.zip.php)
-- [Optional] [Markdownify module](https://github.com/lukaswhite/Drupal-Markdownify) if you'd like to translate your content HTML into the Markdown format.
+- [Optional] [Markdownify module](https://github.com/lukaswhite/Drupal-Markdownify) if you'd like to convert your HTML content to the Markdown format.
 
 ## Installation
 

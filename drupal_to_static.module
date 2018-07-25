@@ -49,9 +49,15 @@ function drupal_to_static_form($form, &$form_state) {
     '#default_value' => 'post',
   );
 
-  $form['unpublished'] = array(
+  $form['markdownify'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Include unpublished nodes?'),
+    '#title' => t('Convert node content to Markdown?'),
+    '#default_value' => FALSE,
+  );
+
+  $form['date_in_filename'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Include node creation date into the resulting file name?'),
     '#default_value' => FALSE,
   );
 
@@ -68,12 +74,11 @@ function drupal_to_static_form($form, &$form_state) {
  * Validate function for the drupal_to_static form.
  */
 function drupal_to_static_form_validate($form, &$form_state) {
-  
+
   $types = array_filter($form_state['values']['types']);
   if (!$types) {
     form_set_error('types', t('You must select at least one content type.'));
   }
-
 }
 
 /**
@@ -83,50 +88,58 @@ function drupal_to_static_form_submit($form, &$form_state) {
 
   $types = array_filter($form_state['values']['types']);
   $layout = $form_state['values']['layout'];
-  drupal_to_static_do_export($types, $layout);
+  $markdownify = (bool)$form_state['values']['markdownify'];
+  $date_in_filename = (bool)$form_state['values']['date_in_filename'];
+  drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename);
 }
 
 /**
  * Run the export.
  *
  * Converts the content of the specified types to markdown, and creates a zip containing them.
+ *
+ * @param $types
+ * @param $layout
+ * @param bool $markdownify
+ *   Determines whether node content should be converted to Markdown.
+ * @param bool $date_in_filename
+ *   Indicates whether it's necessary to include the node creation date into the resulting file name.
  */
-function drupal_to_static_do_export($types, $layout)
+function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename)
 {
-  // Create the Jekyll Export temp folder
+  // Create a temp folder.
   $directory = 'temporary://drupal_to_static';
   $success = file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
   // Now create a directory for this export, using the current timestamp
   $directory .= '/' . date('YmdHis');
-  $success = file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);  
-  
-  // Check the path to the required Markdownfiy library
-  $path = libraries_get_path('markdownify');
+  $success = file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
-  // Load the Markdownify library
-  libraries_load('markdownify');
+  if ($markdownify) {
 
-  $keephtml = true;
-  $md = new Markdownify('Foo', MDFY_BODYWIDTH, $keephtml);
- 
+    // @todo: Check the path to the required Markdownfiy library.
+    $path = libraries_get_path('markdownify');
+
+    // Load the Markdownify library
+    libraries_load('markdownify');
+
+    $keephtml = true;
+    $md = new Markdownify('Foo', MDFY_BODYWIDTH, $keephtml);
+  }
+
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
-                          ->entityCondition('bundle', $types)
-                          ->propertyCondition('status', 1);
-                          
+    ->entityCondition('bundle', $types)
+    ->propertyCondition('status', NODE_PUBLISHED);
 
   $query->propertyOrderBy('created', 'ASC');
 
   $entities = $query->execute();
 
-  if (count($entities)) {    
-    $nids = array_keys($entities['node']);    
-    $nodes = node_load_multiple($nids);    
-    
-  } 
-
-  $files = array();
+  if (count($entities)) {
+    $nids = array_keys($entities['node']);
+    $nodes = node_load_multiple($nids);
+  }
 
   $archive_filename = 'export_' . REQUEST_TIME . '.zip';
   $archive_uri = 'temporary://' . $archive_filename;
@@ -143,21 +156,27 @@ function drupal_to_static_do_export($types, $layout)
       $path_alias = drupal_get_path_alias('node/'.$node->nid);
       // ..get the part after the last /, if appropriate
       if (strpos($path_alias, '/')) {
-        $alias = substr($path_alias, (strripos($path_alias, '/')+1));
+        $alias = substr($path_alias, (strripos($path_alias, '/') + 1));
       } else {
         $alias = $path_alias;
       }
-      // Build the filename
-      $filename = date('Y-m-d', $node->created) . '-' . $alias . '.md';
 
-      // Now get the markdown
-      $markdown = $md->parseString($body);
+      // Build the filename.
+      $filename = $alias . '.md';
+      if ($date_in_filename) {
+        $filename = date('Y-m-d', $node->created) . '-' . $filename;
+      }
+
+      if ($markdownify) {
+        // Now get the markdown.
+        $body = $md->parseString($body);
+      }
 
       // Generate the YAML
       $yaml = sprintf("---\nlayout: %s\ntitle: \"%s\"\ndate: %s\n---\n\n", $layout, $node->title, date('Y-m-d H:i:s', $node->created));
 
       // contents of the filw are the YAML followed by the Markdown
-      $contents = $yaml . $markdown;
+      $contents = $yaml . $body;
 
       // and create the file
       file_unmanaged_save_data($contents, $directory . '/' . $filename, $replace = FILE_EXISTS_RENAME);
@@ -179,9 +198,7 @@ function drupal_to_static_do_export($types, $layout)
     $fp = fopen(drupal_realpath($archive_uri), 'rb');
     fpassthru($fp);
     drupal_exit();
-
   }
 
-  
   drupal_set_message('Content Exported');
 }
