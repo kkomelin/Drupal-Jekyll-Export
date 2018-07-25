@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * A simple Export module for Jekyll
+ * The main module file.
  *
  * @author Lukas White <hello@lukaswhite.com>
  */
@@ -9,28 +9,28 @@
 /**
  * Implements hook_menu().
  */
-function jekyll_export_menu()
+function drupal_to_static_menu()
 {
-	$items = array();
+  $items = array();
 
-	// administrative items
-  $items['admin/config/system/jekyll-export'] = array(
-    'title' => 'Jekyll Export',
+  // administrative items
+  $items['admin/config/development/drupal_to_static'] = array(
+    'title' => 'Drupal to Static',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('jekyll_export_form'),
+    'page arguments' => array('drupal_to_static_form'),
     'access arguments' => array('administer site configuration'),
     'type' => MENU_NORMAL_ITEM
   );
 
-	return $items;
+  return $items;
 }
 
 /**
- * Form definition for the jekyll_export form.
+ * Form definition for the drupal_to_static form.
  *
  * Collects parameters for the export.
  */
-function jekyll_export_form($form, &$form_state) {
+function drupal_to_static_form($form, &$form_state) {
 
   $nodes = node_type_get_names();
 
@@ -65,9 +65,9 @@ function jekyll_export_form($form, &$form_state) {
 }
 
 /**
- * Validate function for the jekyll_export form.
+ * Validate function for the drupal_to_static form.
  */
-function jekyll_export_form_validate($form, &$form_state) {
+function drupal_to_static_form_validate($form, &$form_state) {
   
   $types = array_filter($form_state['values']['types']);
   if (!$types) {
@@ -77,13 +77,13 @@ function jekyll_export_form_validate($form, &$form_state) {
 }
 
 /**
- * Submit function for the jekyll_export form.
+ * Submit function for the drupal_to_static form.
  */
-function jekyll_export_form_submit($form, &$form_state) {
+function drupal_to_static_form_submit($form, &$form_state) {
 
   $types = array_filter($form_state['values']['types']);
   $layout = $form_state['values']['layout'];
-  jekyll_export_do_export($types, $layout);
+  drupal_to_static_do_export($types, $layout);
 }
 
 /**
@@ -91,10 +91,10 @@ function jekyll_export_form_submit($form, &$form_state) {
  *
  * Converts the content of the specified types to markdown, and creates a zip containing them.
  */
-function jekyll_export_do_export($types, $layout) 
+function drupal_to_static_do_export($types, $layout)
 {
   // Create the Jekyll Export temp folder
-  $directory = 'temporary://jekyll-export';
+  $directory = 'temporary://drupal_to_static';
   $success = file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
   // Now create a directory for this export, using the current timestamp
