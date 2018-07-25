@@ -4,6 +4,8 @@ Drupal to Static
 
 ## Motivation
 
+(TBD)
+
 ## Dependencies
 
 - [PHP Zip extension](http://php.net/manual/en/book.zip.php)
