@@ -15,14 +15,14 @@ Copy/clone the module into your sites/all/modules/contrib and enable it as usual
 
 ## Usage
 
-1) Once you've installed the module, browse to _admin/config/development/drupal_to_static_
+1) Once you've installed the module, browse to `admin/config/development/drupal_to_static`
 
 2) Select the content types to export, enter the name of the layout, and hit "Run Export".
 
-3) Download the zip file which the module generates for you. 
+3) Download the ZIP file which the module produces for you. 
 The archive should contain all the specified nodes in Markdown format. 
 
-4) Then copy the content of the archive into the _posts folder of your site generator setup.
+4) Then copy the content of the archive into the `_posts` folder of your site generator setup.
 
 
 ## Credits
