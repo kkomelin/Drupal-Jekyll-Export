@@ -8,13 +8,13 @@ Drupal to Static
 
 ## Changes compared to [lukaswhite/Drupal-Jekyll-Export](https://github.com/lukaswhite/Drupal-Jekyll-Export)
 
-- Added GPLv2 license file (https://github.com/kkomelin/drupal_to_static/issues/1)
-- Renamed the module from `jekyll_export` to `drupal_to_static` (https://github.com/kkomelin/drupal_to_static/issues/2)
+- [Added GPLv2 license file](https://github.com/kkomelin/drupal_to_static/issues/1)
+- [Renamed the module from `jekyll_export` to `drupal_to_static`](https://github.com/kkomelin/drupal_to_static/issues/2)
 - Changed configuration path to `admin/config/development/drupal_to_static`
-- Used version branch `7.x-1.x` instead of `master` (https://github.com/kkomelin/drupal_to_static/issues/3)
-- Removed "Include unpublished nodes?" option (https://github.com/kkomelin/drupal_to_static/issues/9)
-- Made Markdownify optional (https://github.com/kkomelin/drupal_to_static/issues/7)
-- Make dates in file names optional (https://github.com/kkomelin/drupal_to_static/issues/5)
+- [Used version branch `7.x-1.x` instead of `master`](https://github.com/kkomelin/drupal_to_static/issues/3)
+- [Removed "Include unpublished nodes?" option](https://github.com/kkomelin/drupal_to_static/issues/9)
+- [Made Markdownify optional](https://github.com/kkomelin/drupal_to_static/issues/7)
+- [Make dates in file names optional](https://github.com/kkomelin/drupal_to_static/issues/5)
 
 ## Dependencies
 
