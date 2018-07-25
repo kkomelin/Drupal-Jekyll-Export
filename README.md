@@ -1,23 +1,37 @@
-# Drupal to Static
-**Export Drupal 7 site content to the Markdown format for static site generators, such as Jekyll, Jigsaw, etc.**
+Drupal to Static
+===
+**[Drupal to Static](https://github.com/kkomelin/drupal_to_static) module exports Drupal 7 site content in the Markdown format ready for static site generators, such as Jekyll, Jigsaw, etc.**
 
-**(Needs update)**
+## Motivation
 
-A simple module for exporting content from Drupal 7, into a format (Markdown only) suitable for Jekyll.
+## Dependencies
 
-It should work out-of-the-box (provided you also install my [Markdownify module](https://github.com/lukaswhite/Drupal-Markdownify), though the code's quite simple & reasonably well documented, should you need to alter it for your needs.
+- [PHP Zip extension](http://php.net/manual/en/book.zip.php)
+- [Optional] [Markdownify module](https://github.com/lukaswhite/Drupal-Markdownify) if you'd like to translate your content HTML into the Markdown format.
 
-Once you've installed the module, browse to:
+## Installation
 
-_admin/config/development/drupal_to_static_
+Copy/clone the module into your sites/all/modules/contrib and enable it as usual from the admin panel or through drush.
 
-..select the content types to export, enter the name of the layout you want the YAML to specify, and hit "Run Export".
+## Usage
 
-The result: a zip file, containing all the specified nodes in Markdown format.  You should then be able to copy the contents into the _posts folder of your Jekyll site.
+1) Once you've installed the module, browse to _admin/config/development/drupal_to_static_
+
+2) Select the content types to export, enter the name of the layout, and hit "Run Export".
+
+3) Download the zip file which the module generates for you. 
+The archive should contain all the specified nodes in Markdown format. 
+
+4) Then copy the content of the archive into the _posts folder of your site generator setup.
 
 
 ## Credits
 
 
-Author: Lukas White (hello@lukaswhite.com)  
-Modified by: Konstantin Komelin
+Author: [Lukas White](https://github.com/lukaswhite) (hello@lukaswhite.com)  
+Modified by: [Konstantin Komelin](https://github.com/kkomelin)
+
+
+## License
+
+GNU GPL v2.0 ([why?](https://github.com/kkomelin/drupal_to_static/issues/1#issue-344303013))
