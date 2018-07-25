@@ -13,7 +13,7 @@ Drupal to Static
 
 ## Installation
 
-Copy/clone the module into your sites/all/modules/contrib and enable it as usual from the admin panel or through drush.
+Copy/clone the module into your `sites/all/modules/contrib` and enable it as usual from the admin panel or through drush.
 
 ## Usage
 
