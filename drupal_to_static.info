@@ -1,5 +1,5 @@
 name = Drupal to Static
-description = Exports Drupal 7 site content in the Markdown format ready for static site generators, such as Jekyll, Jigsaw, etc.
+description = Exports Drupal 7 site content in the Markdown format for static site generators, such as Jekyll, Jigsaw, etc.
 package = Migrate
 core = 7.x
 configure = admin/config/development/drupal_to_static

@@ -1,6 +1,6 @@
 Drupal to Static
 ===
-[Drupal to Static](https://github.com/kkomelin/drupal_to_static) module exports Drupal 7 site content in the Markdown format ready for static site generators, such as Jekyll, Jigsaw, etc.
+[Drupal to Static](https://github.com/kkomelin/drupal_to_static) module exports Drupal 7 site content in the Markdown format for static site generators, such as Jekyll, Jigsaw, etc.
 
 ## Dependencies
 
