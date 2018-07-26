@@ -1,6 +1,6 @@
 Drupal to Static
 ===
-[Drupal to Static](https://github.com/kkomelin/drupal_to_static) module exports Drupal 7 site content in the Markdown format for static site generators, such as Jekyll, Jigsaw, etc.
+[Drupal to Static](https://github.com/kkomelin/drupal_to_static) module exports Drupal 7 site content in the Markdown format for static site generators, such as [Jekyll](https://jekyllrb.com/), [Jigsaw](http://jigsaw.tighten.co/), etc.
 
 ## Dependencies
 
@@ -30,7 +30,9 @@ The archive should contain all the specified nodes in Markdown format.
 - [Used version branch `7.x-1.x` instead of `master`](https://github.com/kkomelin/drupal_to_static/issues/3)
 - [Removed "Include unpublished nodes?" option](https://github.com/kkomelin/drupal_to_static/issues/9)
 - [Made Markdownify optional](https://github.com/kkomelin/drupal_to_static/issues/7)
-- [Make dates in file names optional](https://github.com/kkomelin/drupal_to_static/issues/5)
+- [Made dates in file names optional](https://github.com/kkomelin/drupal_to_static/issues/5)
+- [Fixed bug: File names of localized nodes are not correct](https://github.com/kkomelin/drupal_to_static/issues/10)
+- [Supported multilingualism](https://github.com/kkomelin/drupal_to_static/issues/8)
 
 ## Credits
 
