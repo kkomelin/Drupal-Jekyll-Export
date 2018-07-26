@@ -12,10 +12,10 @@
 function drupal_to_static_menu()
 {
   $items = array();
-  
+
   $items['admin/config/development/drupal_to_static'] = array(
     'title' => 'Drupal to Static',
-    'description' => 'Export site content to the format suitable for static site generators',
+    'description' => 'Export site content to the format suitable for static site generators.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('drupal_to_static_form'),
     'access arguments' => array('administer site configuration'),
