@@ -24,15 +24,15 @@ The archive should contain all the specified nodes in Markdown format.
 
 ## Changes compared to [lukaswhite/Drupal-Jekyll-Export](https://github.com/lukaswhite/Drupal-Jekyll-Export)
 
-- [Added GPLv2 license file](https://github.com/kkomelin/drupal_to_static/issues/1)
-- [Renamed the module from `jekyll_export` to `drupal_to_static`](https://github.com/kkomelin/drupal_to_static/issues/2)
-- Changed configuration path to `admin/config/development/drupal_to_static`
-- [Used version branch `7.x-1.x` instead of `master`](https://github.com/kkomelin/drupal_to_static/issues/3)
-- [Removed "Include unpublished nodes?" option](https://github.com/kkomelin/drupal_to_static/issues/9)
-- [Made Markdownify optional](https://github.com/kkomelin/drupal_to_static/issues/7)
-- [Made dates in file names optional](https://github.com/kkomelin/drupal_to_static/issues/5)
-- [Fixed bug: File names of localized nodes are not correct](https://github.com/kkomelin/drupal_to_static/issues/10)
-- [Supported multilingualism](https://github.com/kkomelin/drupal_to_static/issues/8)
+- [x] [Added GPLv2 license file](https://github.com/kkomelin/drupal_to_static/issues/1)
+- [x] [Renamed the module from `jekyll_export` to `drupal_to_static`](https://github.com/kkomelin/drupal_to_static/issues/2)
+- [x] Changed configuration path to `admin/config/development/drupal_to_static`
+- [x] [Used version branch `7.x-1.x` instead of `master`](https://github.com/kkomelin/drupal_to_static/issues/3)
+- [x] [Removed "Include unpublished nodes?" option](https://github.com/kkomelin/drupal_to_static/issues/9)
+- [x] [Made Markdownify optional](https://github.com/kkomelin/drupal_to_static/issues/7)
+- [x] [Made dates in file names optional](https://github.com/kkomelin/drupal_to_static/issues/5)
+- [x] [Fixed bug: File names of localized nodes are not correct](https://github.com/kkomelin/drupal_to_static/issues/10)
+- [x] [Supported multilingualism](https://github.com/kkomelin/drupal_to_static/issues/8)
 
 ## Credits
 
