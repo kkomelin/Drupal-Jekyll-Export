@@ -33,6 +33,9 @@ The archive should contain all the specified nodes in Markdown format.
 - [x] [Made dates in file names optional](https://github.com/kkomelin/drupal_to_static/issues/5)
 - [x] [Fixed bug: File names of localized nodes are not correct](https://github.com/kkomelin/drupal_to_static/issues/10)
 - [x] [Supported multilingualism](https://github.com/kkomelin/drupal_to_static/issues/8)
+- [x] Fixed potential bug: Improper use of strrpos() - the position of an occurrence can be 0.
+- [x] Refactoring: extracted some code to separate functions.
+- [x] [Added an option to skip adding language folder for nodes in the default site language](https://github.com/kkomelin/drupal_to_static/issues/11)
 
 ## Credits
 
