@@ -51,21 +51,35 @@ function drupal_to_static_form($form, &$form_state) {
 
   $form['markdownify'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Convert node content to Markdown?'),
-    '#default_value' => FALSE,
+    '#title' => t('Convert node content to Markdown'),
+    '#default_value' => TRUE,
   );
 
   $form['date_in_filename'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Include node creation date into the resulting file name?'),
-    '#description' => t('If enabled, the file names will be like !date!-node-alias', ['!date!' => date('Y-m-d')]),
-    '#default_value' => FALSE,
+    '#title' => t('Include node creation date into the resulting file name'),
+    '#description' => t('Example !date!-node-alias.md', ['!date!' => date('Y-m-d')]),
+    '#default_value' => TRUE,
   );
 
   $form['multilingualism'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Language Settings'),
+  );
+
+  $form['multilingualism']['language_folders'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Take language into account?'),
-    '#description' => t('If enabled, the paths will be like /es/node-alias/ and the resulting files will have a language field'),
+    '#title' => t('Add language folders'),
+    '#description' => t('If enabled, file paths will be like /es/node-alias.md'),
+    '#default_value' => FALSE,
+  );
+
+  $default_language = language_default('native');
+
+  $form['multilingualism']['no_language_folder_for_default_lang'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Do not add a language folder for the default language (!lang)', array('!lang' => $default_language)),
+    '#description' => t('If enabled, file paths for nodes in default language will be without a language prefix, for example /node-alias.md'),
     '#default_value' => FALSE,
   );
 
@@ -97,8 +111,18 @@ function drupal_to_static_form_submit($form, &$form_state) {
   $layout = $form_state['values']['layout'];
   $markdownify = (bool)$form_state['values']['markdownify'];
   $date_in_filename = (bool)$form_state['values']['date_in_filename'];
-  $multilingualism = (bool)$form_state['values']['multilingualism'];
-  drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename, $multilingualism);
+  $language_folders = (bool)$form_state['values']['language_folders'];
+  $no_language_folder_for_default_lang =
+    (bool)$form_state['values']['no_language_folder_for_default_lang'];
+
+  drupal_to_static_do_export(
+    $types,
+    $layout,
+    $markdownify,
+    $date_in_filename,
+    $language_folders,
+    $no_language_folder_for_default_lang
+  );
 }
 
 /**
@@ -112,11 +136,12 @@ function drupal_to_static_form_submit($form, &$form_state) {
  *   Determines whether node content should be converted to Markdown.
  * @param bool $date_in_filename
  *   Indicates whether it's necessary to include the node creation date into the resulting file name.
- * @param bool $multilingualism
+ * @param bool $language_folders
  *   Indicates whether it's necessary to take into account node language.
- *
+ * @param bool $no_language_folder_for_default_lang
+ *   If true, we do not add a language folder for the default language.
  */
-function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename, $multilingualism)
+function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename, $language_folders, $no_language_folder_for_default_lang)
 {
   // Create a temp folder.
   $directory = 'temporary://drupal_to_static';
@@ -152,6 +177,8 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
     $nodes = node_load_multiple($nids);
   }
 
+  $default_language = language_default('language');
+
   $archive_filename = 'export_' . REQUEST_TIME . '.zip';
   $archive_uri = 'temporary://' . $archive_filename;
   $zip = new ZipArchive;
@@ -159,46 +186,38 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
 
     foreach ($nodes as $node) {
 
+      $filename = drupal_to_static_markdown_filename($node, $date_in_filename);
+
       // Extract the body
       $fields = field_get_items('node', $node, 'body');
       $body = $fields[0]['value'];
-
-      // Get the path alias
-      $path_alias = drupal_get_path_alias('node/' . $node->nid, $node->language);
-
-      // ..get the part after the last /, if appropriate
-      if (strpos($path_alias, '/')) {
-        $alias = substr($path_alias, (strripos($path_alias, '/') + 1));
-      } else {
-        $alias = $path_alias;
-      }
-
-      // Build the filename.
-      $filename = $alias . '.md';
-      if ($date_in_filename) {
-        $filename = date('Y-m-d', $node->created) . '-' . $filename;
-      }
 
       if ($markdownify) {
         // Now get the markdown.
         $body = $md->parseString($body);
       }
 
-      // Generate the YAML
-      $yaml = sprintf("---\nlayout: %s\ntitle: \"%s\"\ndate: %s\n---\n\n",
-        $layout, $node->title, date('Y-m-d H:i:s', $node->created));
+      $meta_fields = array(
+        'layout' => $layout,
+        'title' => $node->title,
+        'date' => date('Y-m-d H:i:s', $node->created),
+      );
 
       // Take into account node language if set.
-      if ($multilingualism && isset($node->language) && $node->language !== LANGUAGE_NONE) {
-        $filename = $node->language . DIRECTORY_SEPARATOR . $filename;
+      if (isset($node->language) && $node->language !== LANGUAGE_NONE) {
+        $meta_fields['language'] = $node->language;
 
-        $language_dir = $directory . DIRECTORY_SEPARATOR . $node->language;
-        // @todo: Call file_prepare_directory() only once for each language.
-        $success = file_prepare_directory($language_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+        if ($language_folders && !($no_language_folder_for_default_lang && $node->language === $default_language)) {
 
-        $yaml = sprintf("---\nlayout: %s\ntitle: \"%s\"\ndate: %s\nlanguage: %s\n---\n\n",
-          $layout, $node->title, date('Y-m-d H:i:s', $node->created), $node->language);
+          $filename = $node->language . DIRECTORY_SEPARATOR . $filename;
+
+          $language_dir = $directory . DIRECTORY_SEPARATOR . $node->language;
+          // @todo: Call file_prepare_directory() only once for each language.
+          $success = file_prepare_directory($language_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+        }
       }
+
+      $yaml = drupal_to_static_document_header($meta_fields);
 
       // contents of the file are the YAML followed by the Markdown.
       $contents = $yaml . $body;
@@ -228,4 +247,52 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
   }
 
   drupal_set_message('Content Exported');
+}
+
+/**
+ * Generate document meta header.
+ *
+ * @param array $fields
+ *   [key => value]
+ * @return string
+ */
+function drupal_to_static_document_header($fields) {
+  $content = "---\n";
+
+  foreach ($fields as $key => $value) {
+    $content .= $key . ': "' . $value . "\"\n";
+  }
+
+  $content .= "---\n\n";
+
+  return $content;
+}
+
+/**
+ * Get Markdown file name.
+ *
+ * @param object $node
+ * @param bool $date_in_filename
+ *
+ * @return string
+ */
+function drupal_to_static_markdown_filename($node, $date_in_filename) {
+  // Get the path alias
+  $path_alias = drupal_get_path_alias('node/' . $node->nid, $node->language);
+
+  // ..get the part after the last /, if appropriate
+  $last_slash_pos = strrpos($path_alias, '/');
+  if ($last_slash_pos !== FALSE) {
+    $alias = substr($path_alias, $last_slash_pos + 1);
+  } else {
+    $alias = $path_alias;
+  }
+
+  // Build the filename.
+  $filename = $alias . '.md';
+  if ($date_in_filename) {
+    $filename = date('Y-m-d', $node->created) . '-' . $filename;
+  }
+
+  return $filename;
 }
