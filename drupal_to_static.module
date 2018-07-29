@@ -191,6 +191,9 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
       // Extract the body
       $fields = field_get_items('node', $node, 'body');
       $body = $fields[0]['value'];
+      $format_id = $fields[0]['format'];
+
+      $body = check_markup($body, $format_id, $node->language);
 
       if ($markdownify) {
         // Now get the markdown.
@@ -199,7 +202,7 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
 
       $meta_fields = array(
         'layout' => $layout,
-        'title' => $node->title,
+        'title' => '"' . drupal_to_static_escape_double_quotes($node->title) . '"',
         'date' => date('Y-m-d H:i:s', $node->created),
       );
 
@@ -222,12 +225,15 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
         $metatags = metatag_metatags_load('node', $node->nid);
         if (
           !empty($metatags) &&
-          isset($node->language) &&
-          isset($metatags[$node->language]) &&
-          isset($metatags[$node->language]['description']) &&
-          isset($metatags[$node->language]['description']['value'])
+          isset(
+            $node->language,
+            $metatags[$node->language],
+            $metatags[$node->language]['description'],
+            $metatags[$node->language]['description']['value']
+          )
         ) {
-          $meta_fields['description'] = $metatags[$node->language]['description']['value'];
+          $meta_fields['description'] =
+            '"' . drupal_to_static_escape_double_quotes($metatags[$node->language]['description']['value']) . '"';
         }
       }
 
@@ -274,7 +280,7 @@ function drupal_to_static_document_header($fields) {
   $content = "---\n";
 
   foreach ($fields as $key => $value) {
-    $content .= $key . ': "' . $value . "\"\n";
+    $content .= $key . ': ' . $value . "\n";
   }
 
   $content .= "---\n\n";
@@ -309,4 +315,15 @@ function drupal_to_static_markdown_filename($node, $date_in_filename) {
   }
 
   return $filename;
+}
+
+/**
+ * Escape double quotes in the given string.
+ *
+ * @param string $subject
+ *
+ * @return string
+ */
+function drupal_to_static_escape_double_quotes($subject) {
+  return str_replace('"', '\"', $subject);
 }
