@@ -62,24 +62,11 @@ function drupal_to_static_form($form, &$form_state) {
     '#default_value' => TRUE,
   );
 
-  $form['multilingualism'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Language Settings'),
-  );
-
-  $form['multilingualism']['language_folders'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Add language folders'),
-    '#description' => t('If enabled, file paths will be like /es/node-alias.md'),
-    '#default_value' => FALSE,
-  );
-
   $default_language = language_default('native');
-
-  $form['multilingualism']['no_language_folder_for_default_lang'] = array(
+  $form['no_language_field_for_default_lang'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Do not add a language folder for the default language (!lang)', array('!lang' => $default_language)),
-    '#description' => t('If enabled, file paths for nodes in default language will be without a language prefix, for example /node-alias.md'),
+    '#title' => t('Do not add language field to nodes in the default language (!lang)', array('!lang' => $default_language)),
+    '#description' => t('Ignore it if you do not have multiple languages on your site.'),
     '#default_value' => FALSE,
   );
 
@@ -111,17 +98,15 @@ function drupal_to_static_form_submit($form, &$form_state) {
   $layout = $form_state['values']['layout'];
   $markdownify = (bool)$form_state['values']['markdownify'];
   $date_in_filename = (bool)$form_state['values']['date_in_filename'];
-  $language_folders = (bool)$form_state['values']['language_folders'];
-  $no_language_folder_for_default_lang =
-    (bool)$form_state['values']['no_language_folder_for_default_lang'];
+  $no_language_field_for_default_lang =
+    (bool)$form_state['values']['no_language_field_for_default_lang'];
 
   drupal_to_static_do_export(
     $types,
     $layout,
     $markdownify,
     $date_in_filename,
-    $language_folders,
-    $no_language_folder_for_default_lang
+    $no_language_field_for_default_lang
   );
 }
 
@@ -136,12 +121,10 @@ function drupal_to_static_form_submit($form, &$form_state) {
  *   Determines whether node content should be converted to Markdown.
  * @param bool $date_in_filename
  *   Indicates whether it's necessary to include the node creation date into the resulting file name.
- * @param bool $language_folders
- *   Indicates whether it's necessary to take into account node language.
- * @param bool $no_language_folder_for_default_lang
- *   If true, we do not add a language folder for the default language.
+ * @param bool $no_language_field_for_default_lang
+ *   If true, we do not add language field for nodes in the default language.
  */
-function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename, $language_folders, $no_language_folder_for_default_lang)
+function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename, $no_language_field_for_default_lang)
 {
   // Create a temp folder.
   $directory = 'temporary://drupal_to_static';
@@ -208,15 +191,9 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
 
       // Take into account node language if set.
       if (isset($node->language) && $node->language !== LANGUAGE_NONE) {
-        $meta_fields['language'] = $node->language;
 
-        if ($language_folders && !($no_language_folder_for_default_lang && $node->language === $default_language)) {
-
-          $filename = $node->language . DIRECTORY_SEPARATOR . $filename;
-
-          $language_dir = $directory . DIRECTORY_SEPARATOR . $node->language;
-          // @todo: Call file_prepare_directory() only once for each language.
-          $success = file_prepare_directory($language_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+        if (!$no_language_field_for_default_lang && $node->language !== $default_language) {
+          $meta_fields['language'] = $node->language;
         }
       }
 

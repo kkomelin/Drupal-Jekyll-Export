@@ -35,9 +35,9 @@ The archive should contain all the specified nodes in Markdown format.
 - [x] [Supported multilingualism](https://github.com/kkomelin/drupal_to_static/issues/8)
 - [x] Fixed potential bug: Improper use of strrpos() - the position of an occurrence can be 0.
 - [x] Refactoring: extracted some code to separate functions.
-- [x] [Added an option to skip adding language folder for nodes in the default site language](https://github.com/kkomelin/drupal_to_static/issues/11)
 - [x] [Implemented export of meta description from metatags module](https://github.com/kkomelin/drupal_to_static/issues/12)
-- [x] [Implemented applying Drupal's content filter to body field content before writing it to a file](https://github.com/kkomelin/drupal_to_static/issues/13)
+- [x] [Applied Drupal's content filter to body field content before writing it to a file](https://github.com/kkomelin/drupal_to_static/issues/13)
+- [x] [Added an option to skip adding language field for nodes in the default site language](https://github.com/kkomelin/drupal_to_static/issues/11) See also [#15](https://github.com/kkomelin/drupal_to_static/issues/15)
 
 ## Credits
 
