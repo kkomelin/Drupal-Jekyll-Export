@@ -217,6 +217,20 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
         }
       }
 
+      // Export meta description from Metatags module if it's set.
+      if (function_exists('metatag_metatags_load')) {
+        $metatags = metatag_metatags_load('node', $node->nid);
+        if (
+          !empty($metatags) &&
+          isset($node->language) &&
+          isset($metatags[$node->language]) &&
+          isset($metatags[$node->language]['description']) &&
+          isset($metatags[$node->language]['description']['value'])
+        ) {
+          $meta_fields['description'] = $metatags[$node->language]['description']['value'];
+        }
+      }
+
       $yaml = drupal_to_static_document_header($meta_fields);
 
       // contents of the file are the YAML followed by the Markdown.
