@@ -193,7 +193,7 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
       if (isset($node->language) && $node->language !== LANGUAGE_NONE) {
 
         if (!$no_language_field_for_default_lang && $node->language !== $default_language) {
-          $meta_fields['language'] = $node->language;
+          $meta_fields['lang'] = $node->language;
         }
       }
 
@@ -209,8 +209,10 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
             $metatags[$node->language]['description']['value']
           )
         ) {
-          $meta_fields['description'] =
-            '"' . drupal_to_static_escape_double_quotes($metatags[$node->language]['description']['value']) . '"';
+          $meta_fields['meta'] = array(
+            'name' => 'description',
+            'content' => '"' . drupal_to_static_escape_double_quotes($metatags[$node->language]['description']['value']) . '"',
+          );
         }
       }
 
@@ -257,6 +259,14 @@ function drupal_to_static_document_header($fields) {
   $content = "---\n";
 
   foreach ($fields as $key => $value) {
+    // @todo: Ideally, it should be serialized from an array to YAML for example via Symfony YAML component.
+    if ($key === 'meta') {
+      $content .= $key . ":\n";
+      $content .= '  - name: ' . $value['name'] . "\n";
+      $content .= '    content: ' . $value['content'] . "\n";
+      continue;
+    }
+
     $content .= $key . ': ' . $value . "\n";
   }
 
