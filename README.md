@@ -2,6 +2,12 @@ Drupal to Static
 ===
 [Drupal to Static](https://github.com/kkomelin/drupal_to_static) module exports Drupal 7 site content in the Markdown format for static site generators, such as [Jekyll](https://jekyllrb.com/), [Jigsaw](http://jigsaw.tighten.co/), etc.
 
+_This is a fork of [lukaswhite/Drupal-Jekyll-Export](https://github.com/lukaswhite/Drupal-Jekyll-Export) module which only supports Jekyll._
+
+_Disclaimer: I'm very familiar with Drupal Coding Standards and refactoring approaches 
+but this time I had the goal of getting my own tasks done and allowing others to use the module, so the code can be not ideal.
+If you want it to be better, [please](https://github.com/kkomelin/drupal_to_static/issues/4) [do](https://github.com/kkomelin/drupal_to_static/issues/17)_ 
+
 ## Dependencies
 
 - [PHP Zip extension](http://php.net/manual/en/book.zip.php)
