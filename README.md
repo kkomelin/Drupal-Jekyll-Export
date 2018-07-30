@@ -38,7 +38,7 @@ The archive should contain all the specified nodes in Markdown format.
 - [x] [Implemented export of meta description from metatags module](https://github.com/kkomelin/drupal_to_static/issues/12)
 - [x] [Applied Drupal's content filter to body field content before writing it to a file](https://github.com/kkomelin/drupal_to_static/issues/13)
 - [x] [Added an option to skip adding language field for nodes in the default site language](https://github.com/kkomelin/drupal_to_static/issues/11) See also [#15](https://github.com/kkomelin/drupal_to_static/issues/15)
-
+- [x] [Added support for layout fields of both Jekyll and Jigsaw](https://github.com/kkomelin/drupal_to_static/issues/14)
 
 ## Credits
 

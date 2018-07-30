@@ -49,6 +49,13 @@ function drupal_to_static_form($form, &$form_state) {
     '#default_value' => 'post',
   );
 
+  $form['section'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Section'),
+    '#required' => FALSE,
+    '#default_value' => 'contents',
+  );
+
   $form['markdownify'] = array(
     '#type' => 'checkbox',
     '#title' => t('Convert node content to Markdown'),
@@ -96,6 +103,7 @@ function drupal_to_static_form_submit($form, &$form_state) {
 
   $types = array_filter($form_state['values']['types']);
   $layout = $form_state['values']['layout'];
+  $section = $form_state['values']['section'];
   $markdownify = (bool)$form_state['values']['markdownify'];
   $date_in_filename = (bool)$form_state['values']['date_in_filename'];
   $no_language_field_for_default_lang =
@@ -104,6 +112,7 @@ function drupal_to_static_form_submit($form, &$form_state) {
   drupal_to_static_do_export(
     $types,
     $layout,
+    $section,
     $markdownify,
     $date_in_filename,
     $no_language_field_for_default_lang
@@ -117,6 +126,8 @@ function drupal_to_static_form_submit($form, &$form_state) {
  *
  * @param $types
  * @param $layout
+ * @param $section
+ *   [Jigsaw only] Section name in the layout template.
  * @param bool $markdownify
  *   Determines whether node content should be converted to Markdown.
  * @param bool $date_in_filename
@@ -124,7 +135,7 @@ function drupal_to_static_form_submit($form, &$form_state) {
  * @param bool $no_language_field_for_default_lang
  *   If true, we do not add language field for nodes in the default language.
  */
-function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_filename, $no_language_field_for_default_lang)
+function drupal_to_static_do_export($types, $layout, $section, $markdownify, $date_in_filename, $no_language_field_for_default_lang)
 {
   // Create a temp folder.
   $directory = 'temporary://drupal_to_static';
@@ -184,10 +195,16 @@ function drupal_to_static_do_export($types, $layout, $markdownify, $date_in_file
       }
 
       $meta_fields = array(
-        'layout' => $layout,
-        'title' => '"' . drupal_to_static_escape_double_quotes($node->title) . '"',
-        'date' => date('Y-m-d H:i:s', $node->created),
+        'layout' => $layout, // For Jekyll.
+        'extends' => $layout, // For Jigsaw.
       );
+
+      if (!empty($section)) {
+        $meta_fields['section'] = $section; // For Jigsaw.
+      }
+
+      $meta_fields['title'] = '"' . drupal_to_static_escape_double_quotes($node->title) . '"';
+      $meta_fields['date'] = date('Y-m-d H:i:s', $node->created);
 
       // Take into account node language if set.
       if (isset($node->language) && $node->language !== LANGUAGE_NONE) {
