@@ -209,7 +209,7 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
       // Take into account node language if set.
       if (isset($node->language) && $node->language !== LANGUAGE_NONE) {
 
-        if (!$no_language_field_for_default_lang && $node->language !== $default_language) {
+        if (!$no_language_field_for_default_lang || $node->language !== $default_language) {
           $meta_fields['lang'] = $node->language;
         }
       }
