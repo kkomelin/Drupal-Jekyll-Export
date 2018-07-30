@@ -32,12 +32,12 @@ The archive should contain all the specified nodes in Markdown format.
 - [x] [Made Markdownify optional](https://github.com/kkomelin/drupal_to_static/issues/7)
 - [x] [Made dates in file names optional](https://github.com/kkomelin/drupal_to_static/issues/5)
 - [x] [Fixed bug: File names of localized nodes are not correct](https://github.com/kkomelin/drupal_to_static/issues/10)
-- [x] [Supported multilingualism](https://github.com/kkomelin/drupal_to_static/issues/8) See also [#16](https://github.com/kkomelin/drupal_to_static/issues/16)
+- [x] [Supported multilingualism](https://github.com/kkomelin/drupal_to_static/issues/8). See also [#16](https://github.com/kkomelin/drupal_to_static/issues/16)
 - [x] Fixed potential bug: Improper use of strrpos() - the position of an occurrence can be 0.
 - [x] Refactoring: extracted some code to separate functions.
 - [x] [Implemented export of meta description from metatags module](https://github.com/kkomelin/drupal_to_static/issues/12)
 - [x] [Applied Drupal's content filter to body field content before writing it to a file](https://github.com/kkomelin/drupal_to_static/issues/13)
-- [x] [Added an option to skip adding language field for nodes in the default site language](https://github.com/kkomelin/drupal_to_static/issues/11) See also [#15](https://github.com/kkomelin/drupal_to_static/issues/15)
+- [x] [Added an option to skip adding language field for nodes in the default site language](https://github.com/kkomelin/drupal_to_static/issues/11). See also [#15](https://github.com/kkomelin/drupal_to_static/issues/15)
 - [x] [Added support for layout fields of both Jekyll and Jigsaw](https://github.com/kkomelin/drupal_to_static/issues/14)
 
 ## Credits
