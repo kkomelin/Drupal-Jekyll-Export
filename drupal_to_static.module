@@ -54,7 +54,7 @@ function drupal_to_static_form($form, &$form_state) {
     '#title' => t('Section'),
     '#required' => FALSE,
     '#default_value' => 'contents',
-    '#description' => t('The target section in the layout template (Jigsaw only).')
+    '#description' => t('The target section in the layout template (Jigsaw only).'),
   );
 
   $form['markdownify'] = array(
