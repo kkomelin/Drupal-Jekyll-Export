@@ -172,6 +172,8 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
     $nodes = node_load_multiple($nids);
   }
 
+  $node_authors = drupal_to_static_node_authors($nodes);
+
   $default_language = language_default('language');
 
   $archive_filename = 'export_' . REQUEST_TIME . '.zip';
@@ -204,7 +206,12 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
         $meta_fields['section'] = $section; // For Jigsaw.
       }
 
-      $meta_fields['title'] = '"' . drupal_to_static_escape_double_quotes($node->title) . '"';
+      // Export node author name if possible.
+      if (isset($node_authors[$node->uid])) {
+        $meta_fields['author'] = '"' . drupal_to_static_encode_html($node_authors[$node->uid]) . '"';
+      }
+
+      $meta_fields['title'] = '"' . drupal_to_static_encode_html($node->title) . '"';
       $meta_fields['date'] = date('Y-m-d H:i:s', $node->created);
 
       // Take into account node language if set.
@@ -229,7 +236,7 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
         ) {
           $meta_fields['meta'] = array(
             'name' => 'description',
-            'content' => '"' . drupal_to_static_escape_double_quotes($metatags[$node->language]['description']['value']) . '"',
+            'content' => '"' . drupal_to_static_encode_html($metatags[$node->language]['description']['value']) . '"',
           );
         }
       }
@@ -264,6 +271,30 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
   }
 
   drupal_set_message('Content Exported');
+}
+
+/**
+ * Get author names for the given nodes.
+ *
+ * @param array $nodes
+ * @return array
+ *  [uid => name]
+ */
+function drupal_to_static_node_authors($nodes) {
+  if (empty($nodes)) {
+    return array();
+  }
+
+  $uids = array();
+  foreach ($nodes as $node) {
+    $uids[] = $node->uid;
+  }
+
+  $query = db_select('users', 'u');
+  $query->condition('uid', $uids, 'IN');
+  $query->fields('u', array('uid', 'name'));
+  return $query->execute()
+    ->fetchAllKeyed();
 }
 
 /**
@@ -329,6 +360,6 @@ function drupal_to_static_markdown_filename($node, $date_in_filename) {
  *
  * @return string
  */
-function drupal_to_static_escape_double_quotes($subject) {
-  return str_replace('"', '\"', $subject);
+function drupal_to_static_encode_html($subject) {
+  return htmlentities($subject, ENT_QUOTES);
 }
