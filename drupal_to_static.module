@@ -207,6 +207,8 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
         $meta_fields['section'] = $section; // For Jigsaw.
       }
 
+      $meta_fields['nid'] = $node->nid;
+      
       // Export node author name if possible.
       if (isset($node_authors[$node->uid])) {
         $meta_fields['author'] = '"' . drupal_to_static_encode_html($node_authors[$node->uid]) . '"';
