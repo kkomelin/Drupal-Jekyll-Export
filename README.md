@@ -45,7 +45,6 @@ The archive should contain all the specified nodes in Markdown format.
 - [x] [Applied Drupal's content filter to body field content before writing it to a file](https://github.com/kkomelin/drupal_to_static/issues/13)
 - [x] [Added an option to skip adding language field for nodes in the default site language](https://github.com/kkomelin/drupal_to_static/issues/11). See also [#15](https://github.com/kkomelin/drupal_to_static/issues/15)
 - [x] [Added support for layout fields of both Jekyll and Jigsaw](https://github.com/kkomelin/drupal_to_static/issues/14)
-- [x] [Implemented encoding of special characters in meta strings](https://github.com/kkomelin/drupal_to_static/issues/19)
 - [x] [Implemented export of node author name](https://github.com/kkomelin/drupal_to_static/issues/18)
 - [x] [Implemented export of nid to be able to use it in Disqus identifier](https://github.com/kkomelin/drupal_to_static/issues/20)
  

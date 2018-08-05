@@ -149,7 +149,8 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
 
   if ($markdownify) {
 
-    // @todo: Check the path to the required Markdownfiy library.
+    // @todo: Check tht markdownify module exists.
+    // @todo: Check the path to the required Markdownify library.
     $path = libraries_get_path('markdownify');
 
     // Load the Markdownify library
@@ -211,10 +212,10 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
 
       // Export node author name if possible.
       if (isset($node_authors[$node->uid])) {
-        $meta_fields['author'] = '"' . drupal_to_static_encode_html($node_authors[$node->uid]) . '"';
+        $meta_fields['author'] = '"' . drupal_to_static_escape_double_quotes($node_authors[$node->uid]) . '"';
       }
 
-      $meta_fields['title'] = '"' . drupal_to_static_encode_html($node->title) . '"';
+      $meta_fields['title'] = '"' . drupal_to_static_escape_double_quotes($node->title) . '"';
       $meta_fields['date'] = date('Y-m-d H:i:s', $node->created);
 
       // Take into account node language if set.
@@ -239,7 +240,7 @@ function drupal_to_static_do_export($types, $layout, $section, $markdownify, $da
         ) {
           $meta_fields['meta'] = array(
             'name' => 'description',
-            'content' => '"' . drupal_to_static_encode_html($metatags[$node->language]['description']['value']) . '"',
+            'content' => '"' . drupal_to_static_escape_double_quotes($metatags[$node->language]['description']['value']) . '"',
           );
         }
       }
@@ -363,6 +364,6 @@ function drupal_to_static_markdown_filename($node, $date_in_filename) {
  *
  * @return string
  */
-function drupal_to_static_encode_html($subject) {
-  return htmlentities($subject, ENT_QUOTES);
+function drupal_to_static_escape_double_quotes($subject) {
+  return str_replace('"', '\"', $subject);
 }
